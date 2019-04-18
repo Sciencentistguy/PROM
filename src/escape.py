@@ -32,10 +32,10 @@ write = sys.stdout.write
 
 block = "█"
 
-up = "\u001b[{1}A"
-down = "\u001b[{1}B"
-right = "\u001b[{1}C"
-left = "\u001b[{5}H"
+up = "\u001b[1A"
+down = "\u001b[1B"
+right = "\u001b[1C"
+left = "\u001b[5D"
 while True:
     write(randcolour())
     write(block * 5)
