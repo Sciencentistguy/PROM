@@ -74,26 +74,18 @@ class Ball(Drawable):
         elif self.direction == 4:
             self.direction = 1
 
-    def tick(self):
-        cleanup(self)
-        if (self.y >= 24 or self.y <= 1):
-            self.flip_vert()
-        if (self.x >= 80 or self.x <= 1):
-            self.flip_horiz()
-        if self.direction == 1:
-            self.y -= self.velocity
-            self.x += self.velocity
-        elif self.direction == 2:
-            self.y += self.velocity
-            self.x += self.velocity
-        elif self.direction == 3:
-            self.y += self.velocity
-            self.x -= self.velocity
-        elif self.direction == 4:
-            self.y -= self.velocity
-            self.x -= self.velocity
-        draw(self)
+    def collision_check(self, paddle):
+        if self.y in range(paddle.y, paddle.y + paddle.size[1]):
+            return True
+        return False
 
+
+class Paddle(Drawable):
+    def __init__(self, x, y, length):
+        self.x = x
+        self.y = y
+        self.size = [1, length]
+        self.colour = white
 
 
 def goto(x, y):
@@ -129,6 +121,7 @@ def draw(obj):
         goto(obj.x, obj.y + i)
     return
 
+
 def cleanup(obj):
     if not isinstance(obj, Drawable):
         raise Exception("Tried to cleanup a non-drawable")
@@ -150,14 +143,97 @@ def randcolour():
     return str(random.choice(list(colours.values())))
 
 
+def draw_background():
+    for i in range(25):
+        goto(40, i)
+        write(white)
+        write(block)
+
+
+def draw_number(left, n):
+    x = 15 if left else 55
+    goto(x, 2)
+    write(white)
+    ls = open("ascii_numbers/" + str(n), "r").readlines()
+    for c, i in enumerate(ls):
+        write(i)
+        goto(x, 2 + c)
+
+
+def win(player):
+    clear_screen()
+    goto(12, 20)
+    write(white)
+    if player == 0:
+        write("Congratulations, left has won!")
+        return
+    if player == 1:
+        write("Congratulations, right has won!")
+
+
+def tick(ball, padl, padr):
+    global score
+    draw_background()
+    if score[0] > 9:
+        win(0)
+        time.sleep(10)
+        exit()
+    if score[1] > 9:
+        win(1)
+        time.sleep(10)
+        exit(1)
+    draw_number(True, score[0])
+    draw_number(False, score[1])
+
+    cleanup(ball)
+
+    if (ball.y >= 24 or ball.y <= 1):
+        ball.flip_vert()
+
+    if ball.direction == 1:
+        ball.y -= ball.velocity
+        ball.x += ball.velocity
+    elif ball.direction == 2:
+        ball.y += ball.velocity
+        ball.x += ball.velocity
+    elif ball.direction == 3:
+        ball.y += ball.velocity
+        ball.x -= ball.velocity
+    elif ball.direction == 4:
+        ball.y -= ball.velocity
+        ball.x -= ball.velocity
+
+    if ball.x == 2 or ball.x == 78:
+        if ball.collision_check(padl) or ball.collision_check(padr):
+            ball.flip_horiz()
+    if (ball.x >= 80):
+        ball.flip_horiz()
+        score[0] += 1
+    if ball.x <= 1:
+        ball.flip_horiz()
+        score[1] += 1
+
+    draw(ball)
+    cleanup(padl)
+    draw(padl)
+
+    cleanup(padr)
+    draw(padr)
+
+    time.sleep(0.05)
+
+
 try:
+    padl = Paddle(3, 10, 5)
+    padr = Paddle(78, 10, 5)
     write("\u001b[?25l")
     ball = Ball(40, 12)
     clear_screen()
+    draw_number(False, 8)
+    ball.velocity = 1
+    score = [0, 0]
     while True:
-        ball.velocity = 1
-        ball.tick()
-        time.sleep(0.1)
+        tick(ball, padl, padr)
 except KeyboardInterrupt as e:
     write("\u001b[?25h")
     raise e
