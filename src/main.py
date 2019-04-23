@@ -2,11 +2,23 @@ import sys
 import time
 import random
 from enum import Enum
+from serial import Serial
+SERIAL=True
+if SERIAL:
+    serialPort = Serial("/dev/ttyAMA0",181000)
+    if not serialPort.isOpen():
+        serialPort.open()
+
 
 
 def write(s):
-    sys.stdout.write(s)
-    sys.stdout.flush()
+    global SERIAL
+    global serialPort
+    if SERIAL:
+        serialPort.write(bytes(s, "UTF-8"))
+    else:
+        sys.stdout.write(s)
+        sys.stdout.flush()
 
 
 block = "█"
@@ -214,10 +226,21 @@ def tick(ball, padl, padr):
         score[1] += 1
 
     draw(ball)
+
+
     cleanup(padl)
+    if padl.y<=1 or padl.y>(24-padr.size[1]):
+        padl.y=10
+    else:
+        padl.y+=random.choice([1,-1])
     draw(padl)
 
     cleanup(padr)
+    if padr.y<=1 or padr.y>(24-padr.size[1]):
+        padr.y=10
+    else:
+        padr.y+=random.choice([1,-1])
+
     draw(padr)
 
     time.sleep(0.05)
