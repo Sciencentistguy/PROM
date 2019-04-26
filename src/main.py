@@ -2,13 +2,12 @@ import sys
 import time
 import random
 from enum import Enum
-from serial import Serial
-SERIAL=True
+SERIAL = False
 if SERIAL:
-    serialPort = Serial("/dev/ttyAMA0",181000)
+    from serial import Serial
+    serialPort = Serial("/dev/ttyAMA0", 181000)
     if not serialPort.isOpen():
         serialPort.open()
-
 
 
 def write(s):
@@ -46,7 +45,7 @@ class Drawable:
     colour = str()
 
     def __str__(self):
-        return "<Drawable; size: " + str(self.size) + " coords: " + str(self.coords) + ">"
+        return "<Drawable; size: " + str(self.size) + " x: " + str(self.x) + "y:" + str(self.y) + ">"
 
     __repr__ = __str__
 
@@ -105,7 +104,7 @@ def goto(x, y):
 
 
 def clear_screen():
-    write("\033[2J")
+    write("\u001b[2J")
     goto(0, 0)
 
 
@@ -164,7 +163,7 @@ def draw_background():
 
 def draw_number(left, n):
     x = 15 if left else 55
-    goto(x, 2)
+    goto(x, 4)
     write(white)
     ls = open("ascii_numbers/" + str(n), "r").readlines()
     for c, i in enumerate(ls):
@@ -227,19 +226,18 @@ def tick(ball, padl, padr):
 
     draw(ball)
 
-
     cleanup(padl)
-    if padl.y<=1 or padl.y>(24-padr.size[1]):
-        padl.y=10
+    if padl.y <= 1 or padl.y > (24 - padr.size[1]):
+        padl.y = 10
     else:
-        padl.y+=random.choice([1,-1])
+        padl.y += random.choice([1, -1])
     draw(padl)
 
     cleanup(padr)
-    if padr.y<=1 or padr.y>(24-padr.size[1]):
-        padr.y=10
+    if padr.y <= 1 or padr.y > (24 - padr.size[1]):
+        padr.y = 10
     else:
-        padr.y+=random.choice([1,-1])
+        padr.y += random.choice([1, -1])
 
     draw(padr)
 
