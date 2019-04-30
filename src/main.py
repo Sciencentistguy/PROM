@@ -20,6 +20,8 @@ def write(s):
         sys.stdout.flush()
 
 
+modified = [[True for j in range(25)] for i in range(81)]
+
 block = "█"
 black = "\u001b[30;1m"
 red = "\u001b[31;1m"
@@ -119,7 +121,6 @@ def set_background_colour(colour):
 def draw(obj):
     if not isinstance(obj, Drawable):
         raise Exception("Tried to draw a non-drawable")
-
     if obj.size[0] == 1 and obj.size[1] == 1:
         goto(obj.x, obj.y)
         write(obj.colour)
@@ -141,6 +142,7 @@ def cleanup(obj):
         goto(obj.x, obj.y)
         write(obj.colour)
         write(" ")
+        set_modified(obj.x, obj.y)
         return
     goto(obj.x, obj.y)
     write(obj.colour)
@@ -155,14 +157,20 @@ def randcolour():
 
 
 def draw_background():
-    for i in range(25):
-        goto(40, i)
+    if True in modified[40]:
         write(white)
-        write(block)
+        for i in range(12):
+            if i % 2 == 0:
+                continue
+            goto(40, i * 2)
+            write(block)
+            goto(40, (i * 2) + 1)
+            write(block)
+        modified[40] = [False for i in range(25)]
 
 
 def draw_number(left, n):
-    x = 15 if left else 55
+    x = 30 if left else 48
     goto(x, 4)
     write(white)
     ls = open("ascii_numbers/" + str(n), "r").readlines()
@@ -180,6 +188,16 @@ def win(player):
         return
     if player == 1:
         write("Congratulations, right has won!")
+
+
+def set_modified(x, y):
+    global modified
+    modified[x][y] = True
+
+
+def clear_modified():
+    global modified
+    modified = [[False for i in range(25)] for j in range(81)]
 
 
 def tick(ball, padl, padr):
@@ -245,12 +263,11 @@ def tick(ball, padl, padr):
 
 
 try:
-    padl = Paddle(3, 10, 5)
-    padr = Paddle(78, 10, 5)
+    padl = Paddle(3, 10, 3)
+    padr = Paddle(78, 10, 3)
     write("\u001b[?25l")
     ball = Ball(40, 12)
     clear_screen()
-    draw_number(False, 8)
     ball.velocity = 1
     score = [0, 0]
     while True:
