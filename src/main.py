@@ -2,10 +2,12 @@ import sys
 import time
 import random
 from enum import Enum
-SERIAL = False
-if SERIAL:
+
+PI = False
+if PI:
     from serial import Serial
-    serialPort = Serial("/dev/ttyAMA0", 181000)
+    import smbus
+    serialPort = Serial("/dev/ttyAMA0", 576000)
     if not serialPort.isOpen():
         serialPort.open()
 
@@ -189,6 +191,18 @@ def win(player):
     if player == 1:
         write("Congratulations, right has won!")
 
+def get_controller_l_input():
+    I2CADDR = 0x21
+    CMD_CODE = 0b01000000
+    bus = smbus.SMBus(1)
+    bus.write_byte( I2CADDR, CMD_CODE )
+    tmp = bus.read_word_data( I2CADDR, 0x00 )
+    top8=tmp>>8
+    bottom8=tmp & 0b11111111
+    tmp2=(bottom8<<8) + top8
+    tmp3=tmp2 & 0b111111111111
+    return tmp3
+
 
 def set_modified(x, y):
     global modified
@@ -245,10 +259,9 @@ def tick(ball, padl, padr):
     draw(ball)
 
     cleanup(padl)
-    if padl.y <= 1 or padl.y > (24 - padr.size[1]):
-        padl.y = 10
-    else:
-        padl.y += random.choice([1, -1])
+    varistor_input=get_controller_l_input()
+    varistor_input*=21/4096
+    padl.y=varistor_input
     draw(padl)
 
     cleanup(padr)

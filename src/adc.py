@@ -7,8 +7,11 @@ bus.write_byte( I2CADDR, CMD_CODE )
 tmp = bus.read_word_data( I2CADDR, 0x00 ) 
 print(type(tmp))
 print(tmp)
-stmp="{0:1b}".format(tmp)
-number=stmp[12:] + stmp[8:12] + stmp[4:8]+stmp[:4]
-number=number[4:]
-print(int(number,2))
-
+top8=tmp>>8
+print(top8)
+bottom8=tmp & 0b11111111
+print(bottom8)
+tmp2=(bottom8<<8) + top8
+print(tmp2)
+tmp3=tmp2 & 0b111111111111
+print(tmp3)
