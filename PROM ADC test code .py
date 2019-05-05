@@ -11,7 +11,7 @@ while True:
            else:
                     print('0')
 
-           for i in range(??):
+           for i in range(??):     # what range? 
                myList.insert(0, int (GPIO.input(10)))
                
            sleep(1);           # Sleep for a full second before restarting loop
