@@ -3,7 +3,7 @@ import time
 import random
 from enum import Enum
 
-PI = False
+PI = True
 
 if PI:
     from serial import Serial
@@ -305,8 +305,8 @@ def tick(ball, padl, padr):
     cleanup(padl)
     if PI:
         varistor_input = get_controller_l_input()
-        varistor_input *= 21 / 4096
-        padl.y = varistor_input
+        varistor_input *= (21 / 4096)
+        padl.y = int(varistor_input)
     draw(padl)
 
     cleanup(padr)
