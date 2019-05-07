@@ -5,13 +5,10 @@ GPIO.setup(10, GPIO.IN)    # sets pin 10 as input
 
 
 # Start of infinite loop
-while True: 
-           if (GPIO.input(10) == True): # Physically read the pin 
-                    print('3.3')
-           else:
-                    print('0')
-
-           for i in range(??):     # what range? 
-               myList.insert(0, int (GPIO.input(10)))
+#while True: 
+         #  if (GPIO.input(10) == True): # Physically read the pin 
+                  
+for i in range(100):     # what range? 
+               myList.insert(i, int (GPIO.input(10)))
                
            sleep(1);           # Sleep for a full second before restarting loop
