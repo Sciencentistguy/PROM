@@ -4,10 +4,11 @@ import random
 from enum import Enum
 
 PI = False
+
 if PI:
     from serial import Serial
     import smbus
-    serialPort = Serial("/dev/ttyAMA0", 576000)
+    serialPort = Serial("/dev/ttyAMA0", 57600)
     if not serialPort.isOpen():
         serialPort.open()
 
@@ -171,8 +172,10 @@ def draw_background():
         modified[40] = [False for i in range(25)]
 
 
-def draw_number(left, n):
+def draw_number(left, n, X=0):
     x = 30 if left else 48
+    if not X == 0:
+        x = X
     goto(x, 4)
     write(white)
     ls = open("ascii_numbers/" + str(n), "r").readlines()
@@ -213,6 +216,18 @@ def set_modified(x, y):
 def clear_modified():
     global modified
     modified = [[False for i in range(25)] for j in range(81)]
+
+
+def start_game(ball, padl, padr):
+    draw(ball)
+    draw(padl)
+    draw(padr)
+    draw_number(True, 3, 39)
+    time.sleep(0.8)
+    draw_number(True, 2, 39)
+    time.sleep(0.8)
+    draw_number(True, 1, 39)
+    time.sleep(0.8)
 
 
 def tick(ball, padl, padr):
@@ -285,6 +300,8 @@ try:
     clear_screen()
     ball.velocity = 1
     score = [0, 0]
+    start_game(ball, padl, padr)
+    clear_screen()
     while True:
         tick(ball, padl, padr)
 except KeyboardInterrupt as e:
