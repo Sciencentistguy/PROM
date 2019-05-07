@@ -230,8 +230,14 @@ def start_game(ball, padl, padr):
     time.sleep(0.8)
 
 
+reset = False
+last_win_left = False
+
+
 def tick(ball, padl, padr):
+    global reset
     global score
+    global last_win_left
     draw_background()
     if score[0] > 9:
         win(0)
@@ -263,15 +269,25 @@ def tick(ball, padl, padr):
         ball.x -= ball.velocity
 
     if ball.x == 2 or ball.x == 78:
-        if ball.collision_check(padl) or ball.collision_check(padr):
+        if ball.collision_check(padl):
+            ball.flip_horiz()
+        if ball.collision_check(padr):
             ball.flip_horiz()
     if (ball.x >= 80):
         ball.flip_horiz()
         score[0] += 1
+        last_win_left=False
+        reset=True
     if ball.x <= 1:
         ball.flip_horiz()
         score[1] += 1
-
+        last_win_left=True
+        reset=True
+    if reset:
+        reset = False
+        ball = Ball(padl if last_win_left else padr)
+        countdown()
+    else:
     draw(ball)
 
     cleanup(padl)
