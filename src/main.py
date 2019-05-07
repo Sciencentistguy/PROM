@@ -13,9 +13,9 @@ if PI:
 
 
 def write(s):
-    global SERIAL
+    global PI
     global serialPort
-    if SERIAL:
+    if PI:
         serialPort.write(bytes(s, "UTF-8"))
     else:
         sys.stdout.write(s)
@@ -191,16 +191,17 @@ def win(player):
     if player == 1:
         write("Congratulations, right has won!")
 
+
 def get_controller_l_input():
     I2CADDR = 0x21
     CMD_CODE = 0b01000000
     bus = smbus.SMBus(1)
-    bus.write_byte( I2CADDR, CMD_CODE )
-    tmp = bus.read_word_data( I2CADDR, 0x00 )
-    top8=tmp>>8
-    bottom8=tmp & 0b11111111
-    tmp2=(bottom8<<8) + top8
-    tmp3=tmp2 & 0b111111111111
+    bus.write_byte(I2CADDR, CMD_CODE)
+    tmp = bus.read_word_data(I2CADDR, 0x00)
+    top8 = tmp >> 8
+    bottom8 = tmp & 0b11111111
+    tmp2 = (bottom8 << 8) + top8
+    tmp3 = tmp2 & 0b111111111111
     return tmp3
 
 
@@ -259,9 +260,10 @@ def tick(ball, padl, padr):
     draw(ball)
 
     cleanup(padl)
-    varistor_input=get_controller_l_input()
-    varistor_input*=21/4096
-    padl.y=varistor_input
+    if PI:
+        varistor_input = get_controller_l_input()
+        varistor_input *= 21 / 4096
+        padl.y = varistor_input
     draw(padl)
 
     cleanup(padr)
