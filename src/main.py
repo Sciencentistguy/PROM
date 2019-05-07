@@ -67,8 +67,8 @@ class Ball(Drawable):
         self.y = y
         self.size = [1, 1]
         self.colour = red
-        self.velocity = 0
-        self.direction = 2
+        self.velocity = 1
+        self.direction = 2 if x < 40 else 3
 
     def flip_vert(self):
         if self.direction == 1:
@@ -222,6 +222,10 @@ def start_game(ball, padl, padr):
     draw(ball)
     draw(padl)
     draw(padr)
+    countdown()
+
+
+def countdown():
     draw_number(True, 3, 39)
     time.sleep(0.8)
     draw_number(True, 2, 39)
@@ -234,11 +238,7 @@ reset = False
 last_win_left = False
 
 
-def tick(ball, padl, padr):
-    global reset
-    global score
-    global last_win_left
-    draw_background()
+def write_score(score):
     if score[0] > 9:
         win(0)
         time.sleep(10)
@@ -249,6 +249,14 @@ def tick(ball, padl, padr):
         exit(1)
     draw_number(True, score[0])
     draw_number(False, score[1])
+
+
+def tick(ball, padl, padr):
+    global reset
+    global score
+    global last_win_left
+    draw_background()
+    write_score(score)
 
     cleanup(ball)
 
@@ -276,18 +284,22 @@ def tick(ball, padl, padr):
     if (ball.x >= 80):
         ball.flip_horiz()
         score[0] += 1
-        last_win_left=False
-        reset=True
+        last_win_left = False
+        reset = True
     if ball.x <= 1:
         ball.flip_horiz()
         score[1] += 1
-        last_win_left=True
-        reset=True
+        last_win_left = True
+        reset = True
     if reset:
         reset = False
-        ball = Ball(padl if last_win_left else padr)
+        ball = Ball((padr if last_win_left else padr).x + 2, (padl if last_win_left else padr).y)
         countdown()
-    else:
+        clear_screen()
+        modified[40][1] = True
+        draw_background()
+        write_score(score)
+
     draw(ball)
 
     cleanup(padl)
