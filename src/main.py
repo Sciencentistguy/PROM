@@ -8,15 +8,18 @@ PI = True
 if PI:
     from serial import Serial
     import smbus
+    import RPi.GPIO as GPIO
     serialPort = Serial("/dev/ttyAMA0", 57600)
     if not serialPort.isOpen():
         serialPort.open()
+    GPIO.setmode(GPIO.BCM)
+    [GPIO.setup(x, GPIO.OUT) for x in [5, 6, 12, 13, 16, 19, 20, 26]]
 
 
-def write(s):
+def write(s, ser=True):
     global PI
     global serialPort
-    if PI:
+    if PI and ser:
         serialPort.write(bytes(s, "UTF-8"))
     else:
         sys.stdout.write(s)
@@ -50,7 +53,7 @@ class Drawable:
     colour = str()
 
     def __str__(self):
-        return "<Drawable; size: " + str(self.size) + " x: " + str(self.x) + "y:" + str(self.y) + ">"
+        return "<Drawable; size: " + str(self.size) + " x: " + str(self.x) + " y:" + str(self.y) + ">"
 
     __repr__ = __str__
 
@@ -95,6 +98,9 @@ class Ball(Drawable):
             return True
         return False
 
+    def __str__(self):
+        return "<Ball; size: " + str(self.size) + " x: " + str(self.x) + " y:" + str(self.y) + ">"
+
 
 class Paddle(Drawable):
     def __init__(self, x, y, length):
@@ -103,14 +109,27 @@ class Paddle(Drawable):
         self.size = [1, length]
         self.colour = white
 
+    def __str__(self):
+        return "<Paddle; size: " + str(self.size) + " x: " + str(self.x) + " y:" + str(self.y) + ">"
 
-def goto(x, y):
-    write("\u001b[" + str(y) + ";" + str(x) + "H")
+
+def goto(x, y, ser=True):
+    write("\u001b[" + str(y) + ";" + str(x) + "H", ser)
 
 
-def clear_screen():
-    write("\u001b[2J")
-    goto(0, 0)
+def reset_led():
+    pins = [5, 6, 12, 13, 16, 19, 20, 26]
+    GPIO.output(pins, False)
+
+
+def set_led(led, state):
+    pins = [5, 6, 12, 13, 16, 19, 20, 26]
+    GPIO.output(pins[led], state)
+
+
+def clear_screen(ser=True):
+    write("\u001b[2J", ser=ser)
+    goto(0, 0, ser=ser)
 
 
 def set_background_colour(colour):
@@ -259,7 +278,6 @@ def tick(ball, padl, padr):
     write_score(score)
 
     cleanup(ball)
-
     if (ball.y >= 24 or ball.y <= 1):
         ball.flip_vert()
 
@@ -284,29 +302,30 @@ def tick(ball, padl, padr):
     if (ball.x >= 80):
         ball.flip_horiz()
         score[0] += 1
-        last_win_left = False
-        reset = True
     if ball.x <= 1:
         ball.flip_horiz()
         score[1] += 1
-        last_win_left = True
-        reset = True
-    if reset:
-        reset = False
-        ball = Ball((padr if last_win_left else padr).x + 2, (padl if last_win_left else padr).y)
-        countdown()
-        clear_screen()
-        modified[40][1] = True
-        draw_background()
-        write_score(score)
 
     draw(ball)
+    clear_screen(False)
+    print(ball)
+    print(padl)
+    print(padr)
+
+    reset_led()
+    if ball.x < 10:
+        set_led(0, True)
+    elif ball.x >= 80:
+        set_led(7, True)
+    else:
+        set_led(int(str(ball.x)[0]), True)
 
     cleanup(padl)
     if PI:
         varistor_input = get_controller_l_input()
+        print("<ADC 1; value: " + str(varistor_input)+">")
         varistor_input *= (21 / 4096)
-        padl.y = int(varistor_input)
+        padl.y = int(varistor_input) + 1
     draw(padl)
 
     cleanup(padr)
@@ -321,8 +340,8 @@ def tick(ball, padl, padr):
 
 
 try:
-    padl = Paddle(3, 10, 3)
-    padr = Paddle(78, 10, 3)
+    padl = Paddle(3, 10, 4)
+    padr = Paddle(78, 10, 4)
     write("\u001b[?25l")
     ball = Ball(40, 12)
     clear_screen()
