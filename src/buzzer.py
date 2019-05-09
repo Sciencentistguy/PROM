@@ -51,10 +51,10 @@ def beep(note):
 # SONGS ("Sheet Music")
 
 #Star Wars Theme -- Key of C
-megalovania = [d[3], d[3], d[4], 0, a[4], 0, ab[4], g[3], f[3], d[3], f[3], g[3]]
+megalovania = [d[2], d[2], d[3], a[3], ab[3], g[2], f[2], d[2], f[2], g[2]]
 starwars_notes = [c[1], g[1], f[1], e[1], d[1], c[2], g[1], f[1], e[1], d[1], c[2], g[1], f[1], e[1], f[1], d[1]]
 starwars_beats = [4, 4, 1, 1, 1, 4, 4, 1, 1, 1, 4, 4, 1, 1, 1, 4]
-megalovania_b = [1, 1, 1, 1, 2, 1, 2, 2, 2, 3, 3, 3]
+megalovania_b = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3]
 
 # songnotes: list of the melodies notes
 # songbeats: list of melodies beat times
