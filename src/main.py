@@ -1,9 +1,14 @@
 import sys
 import time
 import random
+<<<<<<< HEAD
 from enum import Enum
 import led
 import adc
+=======
+import buzzer
+import constants
+>>>>>>> e64362b93c17d17f95497edf3e0b57936d73d0d1
 
 PI = True
 
@@ -245,6 +250,7 @@ def start_game(ball, padl, padr):
     draw(ball)
     draw(padl)
     draw(padr)
+    buzzer.dududududododoooooodododod()
     countdown()
 
 
@@ -278,6 +284,7 @@ def tick(ball, padl, padr):
     global reset
     global score
     global last_win_left
+    global rand_speed
     draw_background()
     write_score(score)
 
@@ -301,8 +308,10 @@ def tick(ball, padl, padr):
     if ball.x == 2 or ball.x == 78:
         if ball.collision_check(padl):
             ball.flip_horiz()
+            rand_speed = random.choice([0.05, 0.04, 0.02, 0.06, 0.07, 0.1])
         if ball.collision_check(padr):
             ball.flip_horiz()
+            rand_speed = random.choice([0.05, 0.04, 0.02, 0.06, 0.07, 0.1])
     if (ball.x >= 80):
         ball.flip_horiz()
         score[0] += 1
@@ -315,6 +324,8 @@ def tick(ball, padl, padr):
     print(ball)
     print(padl)
     print(padr)
+    print("<rand_speed; " + str(rand_speed) + ">")
+    print("<scores; left: " + str(score[0]) + " right: " + str(score[1]) + ">")
 
     reset_led()
     if ball.x < 10:
@@ -339,7 +350,10 @@ def tick(ball, padl, padr):
     padr.y = int(varistor_input)
     draw(padr)
 
-    time.sleep(0.05)
+    if constants.random_speed:
+        time.sleep(rand_speed)
+    else:
+        time.sleep(0.05)
 
 
 try:
@@ -351,6 +365,7 @@ try:
     ball.velocity = 1
     score = [0, 0]
     start_game(ball, padl, padr)
+    rand_speed = 0.05
     clear_screen()
     while True:
         tick(ball, padl, padr)
