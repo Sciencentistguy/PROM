@@ -38,9 +38,6 @@ def testBuzzer():
         pass
 
 
-# testBuzzer()
-
-
 def beep(note):
     PWM.ChangeFrequency(note)
     PWM.ChangeDutyCycle(10)
@@ -48,21 +45,8 @@ def beep(note):
     PWM.ChangeDutyCycle(0)
 
 
-# SONGS ("Sheet Music")
-
-#Star Wars Theme -- Key of C
 megalovania = [d[2], d[2], d[3], a[3], ab[3], g[2], f[2], d[2], f[2], g[2]]
-starwars_notes = [c[1], g[1], f[1], e[1], d[1], c[2], g[1], f[1], e[1], d[1], c[2], g[1], f[1], e[1], f[1], d[1]]
-starwars_beats = [4, 4, 1, 1, 1, 4, 4, 1, 1, 1, 4, 4, 1, 1, 1, 4]
 megalovania_b = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3]
-
-# songnotes: list of the melodies notes
-# songbeats: list of melodies beat times
-# tempo: speed of song, this is not traditional tempo in bpm like on a metronome,
-# but more like a multiplier for whatever the notes are so a tempo value of 2
-# make it play twice as fast. Adjust this by ear.
-
-#This function plays the melody, simply by iterating through the list.
 
 
 def playSong(songnotes, songbeats, tempo):
@@ -73,14 +57,5 @@ def playSong(songnotes, songbeats, tempo):
     PWM.ChangeDutyCycle(0)
 
 
-def playStarwars():
-    playSong(starwars_notes, starwars_beats, 0.2)
-
-
 def dududududododoooooodododod():
     playSong(megalovania, megalovania_b, 0.2)
-
-
-def cleanup():
-    PWM.stop()
-    GPIO.cleanup()
