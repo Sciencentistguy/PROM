@@ -18,11 +18,11 @@ def my_callback_two(channel):
     print('Callback two')
 
 
-GPIO.add_event_callback(9, my_callback, bouncetime=200)
+GPIO.add_event_callback(9, my_callback_two, bouncetime=200)
 
 
 def my_callback_two(channel):
     print('Callback three')
 
 
-GPIO.add_event_callback(11, my_callback, bouncetime=200)
+GPIO.add_event_callback(11, my_callback_two, bouncetime=200)
