@@ -1,15 +1,16 @@
+import smbus
 import time
-import RPi.GPIO as g
+I2C_ADDR = 0x38
+LED_OFF = 0xFF
+led_codes = [0xfe, 0xfb, 0xf7, 0xef, 0xdf, 0xbf, 0x7f]
+bus = smbus.SMBus(1)
 
-pins=[5, 6, 12, 13, 16, 19, 20, 26]
 
-g.setmode(g.BCM)
+def activate_led(number):
+    global I2C_ADDR, led_codes
+    bus.write_byte(I2C_ADDR, led_codes[number])
 
-for i in pins:
-    g.setup(i,g.OUT)
 
-while True:
-    g.output(pins, 1)
-    time.sleep(0.4)
-    g.output(pins,0)
-    time.sleep(0.4)
+def clear_led():
+    global LED_OFF, I2C_ADDR
+    bus.write_byte(I2C_ADDR, LED_OFF)

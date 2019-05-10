@@ -2,6 +2,8 @@ import sys
 import time
 import random
 from enum import Enum
+import led
+import adc
 
 PI = True
 
@@ -118,13 +120,15 @@ def goto(x, y, ser=True):
 
 
 def reset_led():
+    led.clear_led()
     pins = [5, 6, 12, 13, 16, 19, 20, 26]
     GPIO.output(pins, False)
 
 
-def set_led(led, state):
+def set_led(led_n, state):
     pins = [5, 6, 12, 13, 16, 19, 20, 26]
-    GPIO.output(pins[led], state)
+    GPIO.output(pins[led_n], state)
+    led.activate_led(led_n)
 
 
 def clear_screen(ser=True):
@@ -323,17 +327,16 @@ def tick(ball, padl, padr):
     cleanup(padl)
     if PI:
         varistor_input = get_controller_l_input()
-        print("<ADC 1; value: " + str(varistor_input)+">")
+        print("<ADC 1; value: " + str(varistor_input) + ">")
         varistor_input *= (21 / 4096)
         padl.y = int(varistor_input) + 1
     draw(padl)
 
     cleanup(padr)
-    if padr.y <= 1 or padr.y > (24 - padr.size[1]):
-        padr.y = 10
-    else:
-        padr.y += random.choice([1, -1])
-
+    varistor_input = adc.adc_run()
+    print("<ADC 1; value: " + str(varistor_input) + ">")
+    varistor_input *= (21 / 27)
+    padr.y = int(varistor_input)
     draw(padr)
 
     time.sleep(0.05)
