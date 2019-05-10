@@ -21,8 +21,8 @@ def my_callback_two(channel):
 GPIO.add_event_callback(9, my_callback_two, bouncetime=200)
 
 
-def my_callback_two(channel):
+def my_callback_three(channel):
     print('Callback three')
 
 
-GPIO.add_event_callback(11, my_callback_two, bouncetime=200)
+GPIO.add_event_callback(11, my_callback_three, bouncetime=200)
