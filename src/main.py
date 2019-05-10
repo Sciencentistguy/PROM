@@ -1,14 +1,11 @@
 import sys
 import time
 import random
-<<<<<<< HEAD
 from enum import Enum
 import led
 import adc
-=======
 import buzzer
 import constants
->>>>>>> e64362b93c17d17f95497edf3e0b57936d73d0d1
 
 PI = True
 
@@ -76,6 +73,7 @@ class Ball(Drawable):
         self.x = x
         self.y = y
         self.size = [1, 1]
+
         self.colour = red
         self.velocity = 1
         self.direction = 2 if x < 40 else 3
@@ -89,6 +87,7 @@ class Ball(Drawable):
             self.direction = 4
         elif self.direction == 4:
             self.direction = 3
+
 
     def flip_horiz(self):
         if self.direction == 1:
@@ -346,7 +345,6 @@ def tick(ball, padl, padr):
     cleanup(padr)
     varistor_input = adc.adc_run()
     print("<ADC 1; value: " + str(varistor_input) + ">")
-    varistor_input *= (21 / 27)
     padr.y = int(varistor_input)
     draw(padr)
 
