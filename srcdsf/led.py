@@ -8,7 +8,7 @@ bus = smbus.SMBus(1)
 
 def activate_led(number):
     global I2C_ADDR, led_codes
-    bus.write_byte(I2C_ADDR, led_codes[number-1])
+    bus.write_byte(I2C_ADDR, led_codes[number])
 
 
 def clear_led():

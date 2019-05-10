@@ -6,6 +6,7 @@ import led
 import adc
 import buzzer
 import constants
+import pyglow
 
 PI = True
 
@@ -185,6 +186,7 @@ def cleanup(obj):
 def randcolour():
     return str(random.choice(list(colours.values())))
 
+ort PyGlow
 
 def draw_background():
     if True in modified[40]:
@@ -208,7 +210,8 @@ def draw_number(left, n, X=0):
     ls = open("ascii_numbers/" + str(n), "r").readlines()
     for c, i in enumerate(ls):
         write(i)
-        goto(x, 2 + c)
+        goto(x, 2 + c)ort PyGlow
+
 
 
 def win(player):
@@ -296,14 +299,14 @@ def tick(ball, padl, padr):
         ball.x += ball.velocity
     elif ball.direction == 2:
         ball.y += ball.velocity
-        ball.x += ball.velocity
+        ball.x += ball.velocity== 1):
+        print("SW debounce
     elif ball.direction == 3:
         ball.y += ball.velocity
         ball.x -= ball.velocity
     elif ball.direction == 4:
         ball.y -= ball.velocity
         ball.x -= ball.velocity
-
 
     if ball.x == 2 or ball.x == 78:
         if ball.collision_check(padl):
@@ -314,9 +317,11 @@ def tick(ball, padl, padr):
             rand_speed = random.choice([0.05, 0.04, 0.02, 0.06, 0.07, 0.1])
     if (ball.x >= 80):
         ball.flip_horiz()
+        pyglow.pyglw()
         score[0] += 1
     if ball.x <= 1:
         ball.flip_horiz()
+        pyglow.pyglw()
         score[1] += 1
 
     draw(ball)
@@ -345,7 +350,7 @@ def tick(ball, padl, padr):
 
     cleanup(padr)
     varistor_input = adc.adc_run()
-    print("<ADC 1; value: " + str(varistor_input) + ">")
+    print("<ADC 2; value: " + str(varistor_input) + ">")
     padr.y = int(varistor_input)
     draw(padr)
 
