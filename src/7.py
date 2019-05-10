@@ -1,21 +1,22 @@
 import smbus
 import time
 
-I2CADDR = 0x38
+I2CADDR = 0x24
 
 bus = smbus.SMBus(1)
-digits = [0,1,2,3]
 
-def displaydig(num):
-    bus.write_byte(I2CADDR, num)
+bus.write_byte_data(I2CADDR,0x03,0x00)
+bus.write_byte_data(I2CADDR,0x01,0x03)
+time.sleep(1)
+bus.write_byte_data(I2CADDR,0x03,0x00)
+bus.write_byte_data(I2CADDR,0x01,0x02)
+time.sleep(1)
+bus.write_byte_data(I2CADDR,0x03,0x00)
+bus.write_byte_data(I2CADDR,0x01,0x01)
+time.sleep(1)
+bus.write_byte_data(I2CADDR,0x03,0x00)
+bus.write_byte_data(I2CADDR,0x01,0x00)
 
-displaydig(3)
-time.sleep(1)
-displaydig(2)
-time.sleep(1)
-displaydig(1)
-time.sleep(1)
-displaydig(0)
 
 
 
