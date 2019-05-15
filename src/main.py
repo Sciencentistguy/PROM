@@ -113,7 +113,7 @@ class Paddle(Drawable):
         self.x = x
         self.y = y
         self.size = [1, length]
-        self.colour = white
+        self.colour = yellow
 
     def __str__(self):
         return "<Paddle; size: " + str(self.size) + " x: " + str(self.x) + " y:" + str(self.y) + ">"
